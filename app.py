@@ -1,10 +1,12 @@
-# FLASK_APP=api.py FLASK_ENV=development flask run
+# FLASK_APP=app.py FLASK_ENV=development flask run
 
+import datetime
 import os
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
+from .auth import AuthError, requires_auth
 from .models import setup_db, Movie, Actor
 
 
@@ -20,12 +22,22 @@ def create_app(test_config=None):
 app = create_app()
 
 
+def format_datetime(value):
+    date = dateutil.parser.parse(value)
+    date_format = "EE MM, dd, y h:mma"
+    return babel.dates.format_datetime(date, date_format)
+
+
+app.jinja_env.filters['datetime'] = format_datetime
+
+
 @app.route('/movies', methods=['GET'])
 def retrieve_movies():
     movies = Movie.query.all()
     if len(movies) == 0:
         abort(404)
 
+    movies = [movie.format() for movie in movies]
     return jsonify({
         'success': True,
         'movies': movies
@@ -33,14 +45,14 @@ def retrieve_movies():
 
 
 @app.route('/movie/<int:movie_id>', methods=['GET'])
-def retrieve_movie(movie_id):
+def retrieve_a_movie(movie_id):
     movie = Movie.query.filter(Movie.id == movie_id).one_or_none()
     if movie is None:
         abort(404)
 
     return jsonify({
         'success': True,
-        'movie': movie
+        'movie': movie.format()
     })
 
 
@@ -51,7 +63,7 @@ def add_movies():
 
         new_movie = Movie(
             title=body.get('title'),
-            release_date=('release_data', None)
+            release_date=body.get('release_date', None)
         )
         new_movie.insert()
 
@@ -102,7 +114,7 @@ def update_movie(movie_id):
         movie.title = movie_title
     movie_release_date = body.get('release_date', None)
     if movie_release_date is not None:
-        movie.recipe = movie_release_date
+        movie.release_date = movie_release_date
 
     try:
         movie.update()
@@ -111,17 +123,17 @@ def update_movie(movie_id):
 
     return jsonify({
         'success': True,
-        'movie': movie
+        'movie': movie.format()
     })
 
 
 @app.route('/actors', methods=['GET'])
 def retrieve_actors():
     actors = Actor.query.all()
-
     if len(actors) == 0:
         abort(404)
 
+    actors = [actor.format() for actor in actors]
     return jsonify({
         'success': True,
         'actors': actors
@@ -129,14 +141,14 @@ def retrieve_actors():
 
 
 @app.route('/actor/<int:actor_id>', methods=['GET'])
-def retrieve_actor(actor_id):
+def retrieve_an_actor(actor_id):
     actor = Actor.query.filter(Actor.id == actor_id).one_or_none()
     if actor is None:
         abort(404)
 
     return jsonify({
         'success': True,
-        'actor': actor
+        'actor': actor.format()
     })
 
 
@@ -211,7 +223,7 @@ def update_actor(actor_id):
 
     return jsonify({
         'success': True,
-        'actor': actor
+        'actor': actor.format()
     })
 
 
