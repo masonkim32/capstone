@@ -1,4 +1,4 @@
-# FLASK_APP=app.py FLASK_ENV=development flask run
+# FLASK_APP=api.py FLASK_ENV=development flask run
 
 import datetime
 import os
@@ -45,7 +45,8 @@ def retrieve_movies():
 
 
 @app.route('/movie/<int:movie_id>', methods=['GET'])
-def retrieve_a_movie(movie_id):
+@requires_auth('get:movie')
+def retrieve_a_movie(payload, movie_id):
     movie = Movie.query.filter(Movie.id == movie_id).one_or_none()
     if movie is None:
         abort(404)
@@ -53,11 +54,12 @@ def retrieve_a_movie(movie_id):
     return jsonify({
         'success': True,
         'movie': movie.format()
-    })
+    }), 200
 
 
 @app.route('/movie', methods=['POST'])
-def add_movies():
+@requires_auth('post:movie')
+def add_movies(payload):
     try:
         body = request.get_json()
 
@@ -73,13 +75,14 @@ def add_movies():
             'success': True,
             'created': new_movie.id,
             'total_movies': len(all_movies),
-        })
+        }), 200
     except Exception:
         abort(422)
 
 
 @app.route('/movie/<int:movie_id>', methods=['DELETE'])
-def delete_movie(movie_id):
+@requires_auth('delete:movie')
+def delete_movie(payload, movie_id):
     try:
         movie = Movie.query.filter(Movie.id == movie_id).one_or_none()
         if movie is None:
@@ -95,14 +98,15 @@ def delete_movie(movie_id):
             'success': True,
             'deleted': movie_id,
             'total_movies': len(all_movies),
-        })
+        }), 200
 
     except Exception:
         abort(422)
 
 
 @app.route('/movie/<int:movie_id>', methods=['PATCH'])
-def update_movie(movie_id):
+@requires_auth('patch:movie')
+def update_movie(payload, movie_id):
     movie = Movie.query.filter(Movie.id == movie_id).one_or_none()
     if movie is None:
         abort(404)
@@ -124,7 +128,7 @@ def update_movie(movie_id):
     return jsonify({
         'success': True,
         'movie': movie.format()
-    })
+    }), 200
 
 
 @app.route('/actors', methods=['GET'])
@@ -141,7 +145,8 @@ def retrieve_actors():
 
 
 @app.route('/actor/<int:actor_id>', methods=['GET'])
-def retrieve_an_actor(actor_id):
+@requires_auth('get:actor')
+def retrieve_an_actor(payload, actor_id):
     actor = Actor.query.filter(Actor.id == actor_id).one_or_none()
     if actor is None:
         abort(404)
@@ -149,11 +154,12 @@ def retrieve_an_actor(actor_id):
     return jsonify({
         'success': True,
         'actor': actor.format()
-    })
+    }), 200
 
 
 @app.route('/actor', methods=['POST'])
-def add_actor():
+@requires_auth('post:actor')
+def add_actor(payload):
     try:
         body = request.get_json()
 
@@ -170,13 +176,14 @@ def add_actor():
             'success': True,
             'created': new_actor.id,
             'total_actors': len(all_actor),
-        })
+        }), 200
     except Exception:
         abort(422)
 
 
 @app.route('/actor/<int:actor_id>', methods=['DELETE'])
-def delete_actor(actor_id):
+@requires_auth('delete:actor')
+def delete_actor(payload, actor_id):
     try:
         actor = Actor.query.filter(Actor.id == actor_id).one_or_none()
         if actor is None:
@@ -192,14 +199,15 @@ def delete_actor(actor_id):
             'success': True,
             'deleted': actor_id,
             'total_movies': len(all_actors),
-        })
+        }), 200
 
     except Exception:
         abort(422)
 
 
 @app.route('/actor/<int:actor_id>', methods=['PATCH'])
-def update_actor(actor_id):
+@requires_auth('patch:actor')
+def update_actor(payload, actor_id):
     actor = Actor.query.filter(Actor.id == actor_id).one_or_none()
     if actor is None:
         abort(404)
@@ -224,7 +232,62 @@ def update_actor(actor_id):
     return jsonify({
         'success': True,
         'actor': actor.format()
-    })
+    }), 200
+
+
+#####################################################################
+# Error Handlers
+#####################################################################
+
+@app.errorhandler(400)
+def bad_request(error):
+    """Error handling for bad request"""
+    return jsonify({
+        "success": False,
+        "error": 400,
+        "message": "bad request"
+    }), 400
+
+
+@app.errorhandler(401)
+def not_authorized(error):
+    """Error handling for unauthorized request"""
+    return jsonify({
+        "success": False,
+        "error": 401,
+        "message": "Not authorized"
+    }), 401
+
+
+@app.errorhandler(404)
+def not_found(error):
+    """Error handling for no resources"""
+
+    return jsonify({
+        "success": False,
+        "error": 404,
+        "message": "resource not found"
+    }), 404
+
+
+@app.errorhandler(422)
+def unprocessable(error):
+    """Error handling for unprocessable entity"""
+
+    return jsonify({
+        "success": False,
+        "error": 422,
+        "message": "unprocessable"
+    }), 422
+
+
+@app.errorhandler(AuthError)
+def process_AuthError(error):
+    """Error handler should conform to general task above"""
+    response = jsonify(error.error)
+    response.status_code = error.status_code
+
+    return response
 
 
 if __name__ == '__main__':
