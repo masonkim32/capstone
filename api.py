@@ -109,7 +109,7 @@ def add_movies(payload):
 
     Add a new movie in the movies table when the request user have
     a proper permission.
-    
+
     Arguments:
         payload (dict): decoded jwt payload
     Returns:
@@ -168,15 +168,15 @@ def delete_movie(payload, movie_id):
             'total_movies': the number of remained movie after
                             deletion
     Raises:
-        404: Resource is not found if the movie in the request is 
+        404: Resource is not found if the movie in the request is
             not existed.
         422: Request is unprocessable.
     """
-    try:
-        movie = Movie.query.filter(Movie.id == movie_id).one_or_none()
-        if movie is None:
-            abort(404)
+    movie = Movie.query.filter(Movie.id == movie_id).one_or_none()
+    if movie is None:
+        abort(404)
 
+    try:
         movie.delete()
         all_movies = Movie.query.all()
 
@@ -185,7 +185,6 @@ def delete_movie(payload, movie_id):
             'deleted': movie_id,
             'total_movies': len(all_movies),
         }), 200
-
     except Exception:
         abort(422)
 
@@ -194,6 +193,7 @@ def delete_movie(payload, movie_id):
 @requires_auth('patch:movie')
 def update_movie(payload, movie_id):
     """An endpoint to handle PATCH request '/movie/<int:movie_id>'
+
     Update the title or release_date of the movie with provided id.
     It is permitted for users who have the proper validations.
 
@@ -291,7 +291,7 @@ def add_actor(payload):
 
     Add a new actor in the actors table when the request user have
     a proper permission.
-    
+
     Arguments:
         payload (dict): decoded jwt payload
     Returns:
@@ -348,15 +348,15 @@ def delete_actor(payload, actor_id):
             'total_actors': the number of remained actor after
                             deletion
     Raises:
-        404: Resource is not found if the actor in the request is 
+        404: Resource is not found if the actor in the request is
             not existed.
         422: Request is unprocessable.
     """
-    try:
-        actor = Actor.query.filter(Actor.id == actor_id).one_or_none()
-        if actor is None:
-            abort(404)
+    actor = Actor.query.filter(Actor.id == actor_id).one_or_none()
+    if actor is None:
+        abort(404)
 
+    try:
         actor.delete()
         all_actors = Actor.query.all()
 
@@ -365,7 +365,6 @@ def delete_actor(payload, actor_id):
             'deleted': actor_id,
             'total_movies': len(all_actors),
         }), 200
-
     except Exception:
         abort(422)
 
