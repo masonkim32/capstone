@@ -1,5 +1,86 @@
-# capstone
+# capstone: Casting Agency App
 
+This app provide the functionality for creating movies and managing and
+assigning actors to those movies. There are three roles with different
+permissions like below:
+
+- Casting Assistant
+    - Can view actors and movies
+- Casting Director
+    - All permissions a Casting Assistant has and…
+    - Add or delete an actor from the database
+    - Modify actors or movies
+- Executive Producer
+    - All permissions a Casting Director has and…
+    - Add or delete a movie from the database
+
+
+## Getting Started
+
+### Prerequisites
+
+- Python 3.6 or higher, and pip3
+- Git, Postgresql, Postman, and Heroku Cli
+- Using python virtual environment is highly recommended.
+
+### Installation
+
+#### PIP Dependencies
+
+Once you have your virtual environment setup and running, install dependencies
+by naviging to the `/backend` directory and running:
+
+```bash
+pip install -r requirements.txt
+```
+
+This will install all of the required packages we selected within the
+`requirements.txt` file.
+
+##### Key Dependencies
+
+- [Flask](http://flask.pocoo.org/)  is a lightweight backend microservices framework. Flask is required to handle requests and responses.
+
+- [SQLAlchemy](https://www.sqlalchemy.org/) and [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/2.x/) are libraries to handle the lightweight sqlite database. Since we want you to focus on auth, we handle the heavy lift for you in `./src/database/models.py`. We recommend skimming this code first so you know how to interface with the Drink model.
+
+- [jose](https://python-jose.readthedocs.io/en/latest/) JavaScript Object Signing and Encryption for JWTs. Useful for encoding, decoding, and verifying JWTS.
+
+### Setup Database
+
+Create castingagency database and user, then import initial data file
+```database.sql``` from the project folder.
+
+```
+CREATE DATABASE castingagency;
+GRANT ALL ON DATABASE castingagency to "castingagency";
+ALTER USER castingagency PASSWORD 'development';
+ALTER USER castingagency CREATEDB;
+
+psql -U castingagency castingagency < database.sql
+```
+
+### Running the server
+
+From the project directory, run:
+
+```bash
+FLASK_APP=api.py FLASK_ENV=development flask run
+```
+
+
+## Test your endpoints with [Postman](https://getpostman.com).
+
+  - import ```casting-agency-test.postman_collection.json``` from
+```./postman_test``` folder.
+  - Run the casting-agency-test collection and check every test is passed.
+
+
+## API Reference.
+
+### Getting Started
+
+- Base URL: At present this app can only be run locally and is not hosted as a base URL. The backend app is hosted at the default, `http://127.0.0.1:5000/`, which is set as a proxy in the frontend configuration.
+- Authentication: This version of the application requires autho0 authentication. The application get JWT Token with proper permission from `masonkim32.eu.auth0.com`.
 
 ### GET /movies
 
@@ -75,7 +156,11 @@
 }
 ```
 
-### GET /movie/1
+### GET /movie/<int:movie_id>
+
+- General: Retrieve the movie data with provided id from database.
+- Action: GET
+- URL: `http://127.0.0.1:5000/movie/1`
 
 ```
 {
@@ -90,10 +175,12 @@
 
 ### POST /movie
 
-{
-	"title": "New Movie",
-	"release_date": "2022-04-04"
-}
+- General: Add a new movie in the movies table when the request user have
+    a proper permission.
+- Action: POST
+- URL: `http://127.0.0.1:5000/movie`
+- Header: Content-Type: application/json
+- Data(JSON): {"title": "New Movie", "release_date": "2022-04-04"}
 
 ```
 {
@@ -103,12 +190,14 @@
 }
 ```
 
-### PATCH /movie/13
+### PATCH /movie/<int:movie_id>
 
-{
-	"title": "Patched Movie",
-	"release_date": "2022-04-05"
-}
+- General: Update the title or release_date of the movie with provided id. It
+is permitted for users who have the proper validations.
+- Action: PATCH
+- URL: `http://127.0.0.1:5000/movie/13`
+- Header: Content-Type: application/json
+- Data(JSON): {"title": "Patched Movie", "release_date": "2022-04-05"}
 
 ```
 {
@@ -121,7 +210,12 @@
 }
 ```
 
-### DELETE /movie/13
+### DELETE /movie/<int:movie_id>
+
+- General: Delete the corresponding row for movie_id. Only users with proper
+permission can delete movie.
+- Action: DELETE
+- URL: `http://127.0.0.1:5000/movie/13`
 
 ```
 {
@@ -131,8 +225,11 @@
 }
 ```
 
-
 ### GET /actors
+
+- General: Retrieve a list of all actors from database.
+- Action: GET
+- URL: `http://127.0.0.1:5000/actors`
 
 ```
 {
@@ -220,8 +317,11 @@
 }
 ```
 
+### GET /actor/<int:actor_id>
 
-### GET /actor/1
+- General: Retrieve the actor data with provided id from database.
+- Action: GET
+- URL: `http://127.0.0.1:5000/actor/1`
 
 ```
 {
@@ -236,11 +336,13 @@
 ```
 
 ### POST /actor
-{
-    "name": "New actor"
-    "age": 20,
-    "gender": "male",
-}
+
+- General: Add a new actor in the actors table when the request user have
+a proper permission.
+- Action: POST
+- URL: `http://127.0.0.1:5000/actor`
+- Header: Content-Type: application/json
+- Data(JSON): {"name": "New actor", "age": 20, "gender": "male"}
 
 ```
 {
@@ -250,12 +352,14 @@
 }
 ```
 
-### PATCH /actor/14
-{
-    "name": "Patched actor"
-    "age": 20,
-    "gender": "female",
-}
+### PATCH /actor/<int:actor_id>
+
+- General: Update the name, age, or gender of the actor with provided id. It is
+permitted for users who have the proper validations.
+- Action: PATCH
+- URL: `http://127.0.0.1:5000/actor/14`
+- Header: Content-Type: application/json
+- Data(JSON): {"name": "Patched actor", "age": 20, "gender": "female"}
 
 ```
 {
@@ -269,7 +373,12 @@
 }
 ```
 
-### DELETE /actor/14
+### DELETE /actor/<int:actor_id>
+
+- General: Delete the corresponding row for actor_id. Only users with proper
+permission can delete movie.
+- Action: DELETE
+- URL: `http://127.0.0.1:5000/actor/14`
 
 ```
 {
@@ -278,3 +387,27 @@
   "total_actors": 13
 }
 ```
+
+### Error Handling
+
+- Errors are returned as JSON objects
+
+```
+{
+    "success": False,
+    "error": 400,
+    "message": "bad request"
+}
+```
+
+- 400: Bad request
+- 401: Not authorized
+- 404: Resource is not found
+- 405: Method not allowed
+- 422: Unprocessable
+
+
+## Authors
+
+- Mason Myoungsung Kim
+- Start Code provided by Udacity Team
