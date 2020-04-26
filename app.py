@@ -41,7 +41,6 @@ def format_datetime(value):
     date_format = "EE MM, dd, y h:mma"
     return babel.dates.format_datetime(date, date_format)
 
-
 app.jinja_env.filters['datetime'] = format_datetime
 
 
