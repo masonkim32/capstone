@@ -4,13 +4,15 @@ import os
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, Integer, String, create_engine
 
-# database_name = 'castingagency'
-# database_path = 'postgres://{}:{}@{}/{}'.format(
-#     'castingagency',
-#     'castingagency',
-#     '127.17.0.2:5432',
-#     database_name
-# )
+'''
+database_name = 'castingagency'
+DATABASE_URI = 'postgres://{}:{}@{}/{}'.format(
+    'castingagency',
+    'castingagency',
+    '127.17.0.2:5432',
+    database_name
+)
+'''
 DATABASE_URI = os.getenv('DATABASE_URI')
 
 db = SQLAlchemy()

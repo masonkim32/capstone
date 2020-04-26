@@ -16,8 +16,8 @@ from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
-from .auth.auth import AuthError, requires_auth
-from .database.models import setup_db, Movie, Actor
+from auth.auth import AuthError, requires_auth
+from database.models import setup_db, Movie, Actor
 
 
 #####################################################################
