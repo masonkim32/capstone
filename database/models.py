@@ -13,7 +13,7 @@ DATABASE_URL = 'postgres://{}:{}@{}/{}'.format(
     database_name
 )
 '''
-DATABASE_URL = os.getenv('DATABASE_URI')
+DATABASE_URL = os.getenv('DATABASE_URL')
 
 db = SQLAlchemy()
 
