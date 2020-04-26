@@ -1,4 +1,4 @@
-"""api.py
+"""app.py
 
 This is the main module of the Flask app: 'Casting Agency'.
 This app provide the functionality for creating movies and managing
@@ -8,7 +8,7 @@ and assigning actors to those movies.
 - Start code is provided by Udacity
 
 Example:
-    FLASK_APP=api.py FLASK_ENV=development flask run
+    FLASK_APP=app.py FLASK_ENV=development flask run
 """
 import datetime
 import os
