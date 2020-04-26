@@ -6,19 +6,19 @@ from sqlalchemy import Column, Integer, String, create_engine
 
 '''
 database_name = 'castingagency'
-DATABASE_URI = 'postgres://{}:{}@{}/{}'.format(
+DATABASE_URL = 'postgres://{}:{}@{}/{}'.format(
     'castingagency',
     'castingagency',
     '127.17.0.2:5432',
     database_name
 )
 '''
-DATABASE_URI = os.getenv('DATABASE_URI')
+DATABASE_URL = os.getenv('DATABASE_URI')
 
 db = SQLAlchemy()
 
 
-def setup_db(app, database_path=DATABASE_URI):
+def setup_db(app, database_path=DATABASE_URL):
     """setup_db(app)
 
     binds a flask application and a SQLAlchemy service
