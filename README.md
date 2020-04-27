@@ -14,6 +14,11 @@ permissions like below:
     - All permissions a Casting Director has and…
     - Add or delete a movie from the database
 
+## Casting Agency App on Heroku
+
+This app is running on Heroku. The service root url is like below:
+
+https://mason-kim-capstone.herokuapp.com
 
 ## Getting Started
 
