@@ -131,6 +131,7 @@ COPY public.actors (id, name, age, gender) FROM stdin;
 --
 
 COPY public.movies (id, title, release_date) FROM stdin;
+1	The High Note	2020-05-08
 2	The Painted Bird	2020-07-17
 3	Mulan	2020-07-24
 4	The Avengers	2012-05-04
@@ -142,7 +143,6 @@ COPY public.movies (id, title, release_date) FROM stdin;
 10	The Matrix 	1999-03-31
 11	Saving Private Ryan	1998-07-24
 12	Forrest Gump	1994-07-06
-1	The High Note	2020-05-08
 \.
 
 

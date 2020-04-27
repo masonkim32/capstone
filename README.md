@@ -70,7 +70,9 @@ FLASK_APP=api.py FLASK_ENV=development flask run
 
 ## Test your endpoints with [Postman](https://getpostman.com).
 
-  - import ```casting-agency-test.postman_collection.json``` from
+  - Before running postman test collection, database.sql must be imported to
+castingagency database.
+  - Import ```casting-agency-test-localhost.postman_collection.json``` from
 ```./postman_test``` folder.
   - Run the casting-agency-test collection and check every test is passed.
 
